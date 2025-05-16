@@ -71,8 +71,11 @@ streamlit run app.py
 This project was built collaboratively as part of a group academic assignment:
 
 🧑 Safee Ullah Mughal – Page 1: Country Explorer
+<br>
 🧑 Muhammad Noman – Page 2: Regional Filter
+<br>
 🧑 Tehreem Baig – Page 3: Global Summary
+<br>
 🧑 Ayesha Ghaffar – Page 4: Top Performers & Trends
 
 All contributions were made via GitHub commits and pull requests.
