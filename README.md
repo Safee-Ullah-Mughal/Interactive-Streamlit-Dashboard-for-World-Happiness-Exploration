@@ -93,3 +93,6 @@ world-happiness-dashboard/
 ├── app.py                     # Landing page
 ├── README.md                  # Project readme
 ├── requirements.txt           # Python dependencies
+
+---
+
