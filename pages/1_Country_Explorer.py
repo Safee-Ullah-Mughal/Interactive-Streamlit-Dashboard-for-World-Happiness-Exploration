@@ -31,7 +31,7 @@ df = load_data()                      # Store dataset in a DataFrame
 # ---------------------------
 with st.sidebar:
     st.header("🎛️ Controls")                                     # Sidebar title
-    country_input = st.text_input("Enter a country", value="Norway")  # Input field to enter a country name
+    country_input = st.text_input("Enter a country", value="Pakistan")  # Input field to enter a country name
 
     # Determine slider limits based on min and max ranks in data
     min_rank = int(df["Happiness Rank"].min())
