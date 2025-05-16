@@ -81,7 +81,9 @@ This project was built collaboratively by:
 
 ---
 
-world-happiness-dashboard/
+### Folder Structure
+
+Interactive-Streamlit-Dashboard-for-World-Happiness-Exploration
 │
 ├── data/                      # Dataset (2015.csv)
 ├── pages/                     # Streamlit pages
