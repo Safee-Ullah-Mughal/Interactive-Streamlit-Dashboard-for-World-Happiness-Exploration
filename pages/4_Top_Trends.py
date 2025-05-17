@@ -1,10 +1,4 @@
-# --- Add sidebar navigation here ---
-st.sidebar.markdown("### 🧭 Navigation Menu")
-st.sidebar.page_link("app.py", label="🏠 Home")
-st.sidebar.page_link("pages/1_Country_Explorer.py", label="📊 Dashboard - Safee")
-st.sidebar.page_link("pages/2_Regional_Filter.py", label="📈 Dashboard - Noman")
-st.sidebar.page_link("pages/3_Global_Summary.py", label="📉 Dashboard - Tehreem")
-st.sidebar.page_link("pages/4_Top_Trends.py", label="🌐 Dashboard - Ayesha")
+
 # -----------------------------------------------------------------------------------------
 # 📄 Page: Top Trends in Global Happiness (2015)
 # -----------------------------------------------------------------------------------------
