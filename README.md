@@ -82,11 +82,7 @@ All contributions were made via GitHub commits and pull requests.
 
 ## 📁 Project Structure
 
-```bash
-INTERACTIVE-STREAMLIT-DASHBOARD-FOR-WORLD-HAPPINESS-EXPLORATION/
-│
-├── data/
-│   └── 2015.csv                   # Dataset file
+
 │
 ├── pages/                         # Streamlit multi-page scripts
 │   ├── 1_Country_Explorer.py
