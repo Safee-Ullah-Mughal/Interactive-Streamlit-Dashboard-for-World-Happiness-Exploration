@@ -3,16 +3,16 @@
 # ---------------------------
 
 # Import essential libraries
-import streamlit as st                     # For interactive web app interface
-import pandas as pd                        # For data manipulation
-import matplotlib.pyplot as plt            # For plotting charts (bar/horizontal)
-import plotly.express as px                # For interactive world map (choropleth)
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import plotly.express as px
 
 # ---------------------------
 # Streamlit Page Configuration
 # ---------------------------
-st.set_page_config(page_title="Country Explorer", layout="wide")  # Full-width layout
-st.title("Country Happiness Explorer")                          # Main title
+st.set_page_config(page_title="Country Explorer", layout="wide")
+st.title("Country Happiness Explorer")
 
 # Introduction text
 st.markdown("""
@@ -29,24 +29,24 @@ This tool allows you to:
 # ---------------------------
 @st.cache_data
 def load_data():
-    """Load 2015 happiness dataset from CSV"""
     return pd.read_csv("data/2015.csv")
 
-df = load_data()  # Load dataset into a DataFrame
+df = load_data()
 
 # ---------------------------
 # Sidebar Filters & Controls
 # ---------------------------
 with st.sidebar:
-    st.header("Controls")  # Section title in sidebar
-    
-    # Country input text field
-    country_input = st.text_input("Enter a country", value="Pakistan")
-    
+    st.header("Controls")
+
+    # Dropdown with searchable country list
+    country_list = df["Country"].sort_values().unique()
+    country_input = st.selectbox("Select a country", options=country_list, index=list(country_list).index("Pakistan"))
+
     # Rank range slider
     min_rank = int(df["Happiness Rank"].min())
     max_rank = int(df["Happiness Rank"].max())
-    rank_range = st.slider("Select rank range", min_rank, max_rank, (1, 50))
+    rank_range = st.slider("Select rank range", min_rank, max_rank, (1, 20))
 
 # ---------------------------
 # Layout: Two Column Display
@@ -59,32 +59,28 @@ col1, col2 = st.columns(2)
 with col1:
     st.subheader(f"Factor Breakdown for: **{country_input}**")
 
-    # Filter the country data (case insensitive)
-    country_data = df[df["Country"].str.lower() == country_input.lower()]
-    
+    # Filter the country data
+    country_data = df[df["Country"] == country_input]
+
     if not country_data.empty:
-        # Get the first matching row for selected country
         country_row = country_data.iloc[0]
-        
-        # Key contributing factors to happiness
+
         factors = [
             "Economy (GDP per Capita)", "Family", "Health (Life Expectancy)",
             "Freedom", "Trust (Government Corruption)", "Generosity"
         ]
 
-        # === Expandable Country Stats Table ===
         with st.expander(" Country Summary Table"):
             summary_cols = ["Region", "Happiness Rank", "Happiness Score"] + factors
             st.dataframe(
                 country_data[summary_cols].T.rename(columns={country_data.index[0]: country_input})
             )
 
-        # === Bar Chart: Country vs Global Average ===
-        st.markdown("###  Factor Contributions Compared to Global Average")
-        
-        global_avg = df[factors].mean()       # Mean of all countries
-        country_values = country_row[factors] # Selected country's values
-        diff = country_values - global_avg    # Difference from average
+        st.markdown("### Factor Contributions Compared to Global Average")
+
+        global_avg = df[factors].mean()
+        country_values = country_row[factors]
+        diff = country_values - global_avg
 
         fig1, ax1 = plt.subplots(figsize=(6, 4))
         bar_colors = ["#2a9d8f" if d >= 0 else "#e76f51" for d in diff]
@@ -97,7 +93,6 @@ with col1:
         ax1.grid(axis='y', linestyle='--', alpha=0.6)
         st.pyplot(fig1)
 
-        # === Interpretation ===
         st.markdown("#### Interpretation")
         above_avg = diff[diff > 0].index.tolist()
         below_avg = diff[diff < 0].index.tolist()
@@ -106,37 +101,35 @@ with col1:
             st.success(f"**Above average in:** {', '.join(above_avg)}")
         if below_avg:
             st.error(f"**Below average in:** {', '.join(below_avg)}")
-    
     else:
         st.warning("Country not found. Please check your spelling.")
 
 # ===========================
-# COLUMN 2: Rank Range Overview
+# COLUMN 2: Rank Range Overview with Pie Chart
 # ===========================
 with col2:
     st.subheader(f"Countries Ranked Between {rank_range[0]} and {rank_range[1]}")
 
-    # Filter countries in selected rank range
     filtered_df = df[(df["Happiness Rank"] >= rank_range[0]) & (df["Happiness Rank"] <= rank_range[1])]
-    
     top5 = filtered_df.nsmallest(5, "Happiness Rank")
     bottom5 = filtered_df.nlargest(5, "Happiness Rank")
 
-    # Show top 5 countries
     st.markdown("##### Top 5 in Selected Range")
     st.dataframe(top5[["Country", "Happiness Score"]].reset_index(drop=True))
 
-    # Show bottom 5 countries
     st.markdown("##### Bottom 5 in Selected Range")
     st.dataframe(bottom5[["Country", "Happiness Score"]].reset_index(drop=True))
 
-    # Bar chart for all countries in the range
-    fig2, ax2 = plt.subplots(figsize=(6, 8))
-    sorted_range = filtered_df.sort_values("Happiness Score")
-    ax2.barh(sorted_range["Country"], sorted_range["Happiness Score"], color="#4361ee")
-    ax2.set_xlabel("Happiness Score")
-    ax2.set_title("Scores of Countries in Selected Rank Range")
-    st.pyplot(fig2)
+    # ✅ Interactive Pie Chart Instead of Bar Chart
+    st.markdown("### Pie Chart: Share of Happiness Scores")
+    pie_fig = px.pie(
+        filtered_df,
+        names="Country",
+        values="Happiness Score",
+        title="Distribution of Happiness Scores in Selected Range"
+    )
+    pie_fig.update_traces(textinfo="percent+label")
+    st.plotly_chart(pie_fig, use_container_width=True)
 
 # ===========================
 # Global Choropleth Map
@@ -156,7 +149,6 @@ try:
     )
     fig_map.update_layout(margin={"r": 0, "t": 30, "l": 0, "b": 0})
     st.plotly_chart(fig_map, use_container_width=True)
-
 except ModuleNotFoundError:
     st.warning("⚠️ Plotly is not installed. Please run `pip install plotly` to view the map.")
 
