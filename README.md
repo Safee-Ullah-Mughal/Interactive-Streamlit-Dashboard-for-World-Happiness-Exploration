@@ -80,20 +80,5 @@ This project was built collaboratively as part of a group academic assignment:
 
 All contributions were made via GitHub commits and pull requests.
 
-## 📁 Project Structure
-
-
-│
-├── pages/                         # Streamlit multi-page scripts
-│   ├── 1_Country_Explorer.py
-│   ├── 2_Regional_Filter.py
-│   ├── 3_Global_Summary.py
-│   └── 4_Top_Trends.py
-│
-├── app.py                         # Main entry point (landing page)
-├── logo.png                       # Project logo (optional)
-├── requirements.txt               # Python dependencies
-└── README.md                      # Project documentation
-```
 
 💬 For feedback or contributions, feel free to fork and submit a pull request!
