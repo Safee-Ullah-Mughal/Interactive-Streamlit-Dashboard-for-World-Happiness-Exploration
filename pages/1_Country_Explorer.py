@@ -120,16 +120,28 @@ with col2:
     st.markdown("##### Bottom 5 in Selected Range")
     st.dataframe(bottom5[["Country", "Happiness Score"]].reset_index(drop=True))
 
-    # ✅ Interactive Pie Chart Instead of Bar Chart
-    st.markdown("### Pie Chart: Share of Happiness Scores")
-    pie_fig = px.pie(
-        filtered_df,
-        names="Country",
-        values="Happiness Score",
-        title="Distribution of Happiness Scores in Selected Range"
-    )
-    pie_fig.update_traces(textinfo="percent+label")
-    st.plotly_chart(pie_fig, use_container_width=True)
+
+    # Tree Map: Happiness Scores in Selected Rank Range
+st.markdown("#### Tree Map: Happiness Scores")
+
+fig_tree = px.treemap(
+    filtered_df,
+    path=["Country"],
+    values="Happiness Score",
+    color="Happiness Score",
+    color_continuous_scale=px.colors.sequential.Tealgrn,
+    title="Tree Map of Happiness Scores by Country",
+    hover_data={"Happiness Score": ':.2f'},  # show score with 2 decimals on hover
+)
+# Improve layout for clarity and spacing
+fig_tree.update_layout(
+    margin=dict(t=60, l=10, r=10, b=10),
+    title_font_size=20,
+)
+# Enhance text visibility inside the treemap
+fig_tree.data[0].texttemplate = "%{label}<br>%{value:.2f}"
+st.plotly_chart(fig_tree, use_container_width=True)
+
 
 # ===========================
 # Global Choropleth Map
@@ -147,10 +159,10 @@ try:
         color_continuous_scale="YlGnBu",
         title="Global Happiness Distribution (2015)",
     )
-    fig_map.update_layout(margin={"r": 0, "t": 30, "l": 0, "b": 0})
+    fig_map.update_layout(margin={"r": 50, "t": 30, "l": 0, "b": 0})
     st.plotly_chart(fig_map, use_container_width=True)
 except ModuleNotFoundError:
-    st.warning("⚠️ Plotly is not installed. Please run `pip install plotly` to view the map.")
+    st.warning("Plotly is not installed. Please run `pip install plotly` to view the map.")
 
 # ===========================
 # Navigation Links
